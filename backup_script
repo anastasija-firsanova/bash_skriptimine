@@ -1,0 +1,22 @@
+#!/bin/bash
+
+backup_dir="/home/home_bcp"
+
+if [ ! -d "$backup_dir" ]; then
+    mkdir -p "$backup_dir"
+fi
+
+backup_date=$(date +"%d.%m.%Y")
+
+for user_home in /home/*; do
+    if [ -d "$user_home" ]; then
+
+        username=$(basename "$user_home")
+
+        tar -czf "$backup_dir/$username.$backup_date.tar.gz" -C /home "$username"
+
+        echo "Kasutaja $username kodukataloogi varundamine on lõpetatud."
+    fi
+done
+
+echo "Kõik kasutajate kodukataloogid on varundatud ja pakitud."
