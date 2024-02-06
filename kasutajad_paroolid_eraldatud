@@ -1,0 +1,27 @@
+#!/bin/bash
+#skript mis kasutab eraldi paroolide ja kasutajate faili
+if [ "$(id -u)" -ne 0 ]; then
+  echo "Skripti käivitamiseks on vajalik juurkasutaja õigus!" 
+  exit 1
+fi
+
+if [ $# -ne 2 ]; then
+  echo "Kasutage skripti järgmiselt: $0 <kasutajate_fail> <paroolide_fail>"
+  exit 1
+fi
+
+kasutajate_fail=$1
+paroolide_fail=$2
+
+if [ ! -f "$kasutajate_fail" ] || [ ! -f "$paroolide_fail" ]; then
+  echo "Kasutajate või paroolide faili ei leitud!"
+  exit 1
+fi
+
+while IFS= read -r kasutajanimi; do
+  read -r parool <&3
+  
+  useradd -m -p "$parool" "$kasutajanimi"
+done < "$kasutajate_fail" 3< "$paroolide_fail"
+
+echo "Kasutajad lisatud vastavalt failidele $kasutajate_fail ja $paroolide_fail."
